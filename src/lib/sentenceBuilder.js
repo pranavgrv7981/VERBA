@@ -18,7 +18,7 @@ export async function buildSentence(signs) {
       },
       body: JSON.stringify({
         model: MODEL,
-        max_tokens: 80,
+        max_tokens: 160,
         temperature: 0.3,
         messages: [
           {
