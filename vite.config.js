@@ -4,11 +4,17 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   server: {
-    host: '127.0.0.1',
-    port: 5173
-  },
-  preview: {
-    host: '127.0.0.1',
-    port: 4175
+    proxy: {
+      '/openrouter': {
+        target: 'https://openrouter.ai',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/openrouter/, ''),
+        headers: {
+          'Authorization': `Bearer ${process.env.VITE_OPENROUTER_KEY || ''}`,
+          'HTTP-Referer': 'https://verba.app',
+          'X-Title': 'Verba ASL'
+        }
+      }
+    }
   }
 });
