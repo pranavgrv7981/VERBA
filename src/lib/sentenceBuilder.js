@@ -1,21 +1,20 @@
-const MODEL = 'google/gemini-flash-1.5';
+const MODEL = 'google/gemini-3.5-flash';
 
 export async function buildSentence(signs) {
-  if (!signs || signs.length === 0) return null;
+  console.log('buildSentence called with signs:', signs);
+  
+  if (!signs || signs.length === 0) {
+    console.log('No signs provided, returning null');
+    return null;
+  }
 
   try {
-    const apiKey = import.meta.env.VITE_OPENROUTER_API_KEY;
+    console.log('About to call OpenRouter API...');
     
-    if (!apiKey) {
-      console.error('OpenRouter API key not found. Add VITE_OPENROUTER_API_KEY to .env.local');
-      return null;
-    }
-
-    const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    const res = await fetch('/openrouter/api/v1/chat/completions', {
       method: 'POST',
       headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         model: MODEL,
@@ -40,11 +39,22 @@ Rules:
       })
     });
 
-    if (!res.ok) return null;
+    console.log('API Response status:', res.status);
+    
+    if (!res.ok) {
+      console.error('API Error:', res.status, res.statusText);
+      const errorText = await res.text();
+      console.error('Error details:', errorText);
+      return null;
+    }
+    
     const data = await res.json();
-    return data.choices?.[0]?.message?.content?.trim() || null;
+    console.log('API Response data:', data);
+    const result = data.choices?.[0]?.message?.content?.trim() || null;
+    console.log('Final result:', result);
+    return result;
   } catch (err) {
-    console.error('sentenceBuilder:', err);
+    console.error('sentenceBuilder error:', err);
     return null;
   }
 }
