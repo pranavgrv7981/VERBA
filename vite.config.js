@@ -10,7 +10,7 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/openrouter/, ''),
         headers: {
-          'Authorization': `Bearer ${process.env.VITE_OPENROUTER_KEY || ''}`,
+          'Authorization': `Bearer ${process.env.VITE_OPENROUTER_API_KEY || ''}`,
           'HTTP-Referer': 'https://verba.app',
           'X-Title': 'Verba ASL'
         }
